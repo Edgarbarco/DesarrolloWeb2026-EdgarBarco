@@ -37,35 +37,52 @@
       <p>En MotoZone encontrarás información sobre los mejores modelos de motocicletas,
          consejos de mantenimiento y todo lo que necesitas para mantener tu moto en óptimas condiciones.</p>
 
-      <dialog id="bienvenida">
-        <h3>¡Hola!</h3>
-        <p>Bienvenido a MotoZone. Explora nuestro catálogo y encuentra tu próxima moto.</p>
-        <form method="dialog">
-          <button>Cerrar</button>
+         <dialog id="bienvenida">
+          <h3>¡Bienvenido a MotoZone!</h3>
+          <p>Somos una tienda especializada en motocicletas ubicada en Jalapa, Guatemala.
+             Ofrecemos modelos urbanos, deportivos y de doble propósito, además de
+             servicio de mantenimiento certificado.</p>
+          <p>Explora nuestro catálogo o agenda una cita de servicio desde este sitio.</p>
+          <form method="dialog">
+            <button>Entendido, cerrar</button>
+          </form>
+        </dialog>
+        <button command="show-modal" commandfor="bienvenida">
+          Ver mensaje de bienvenida
+        </button>
+  
+        <button popovertarget="menu-ayuda">Preguntas frecuentes</button>
+        <div id="menu-ayuda" popover>
+          <h4>Preguntas frecuentes</h4>
+          <ul>
+            <li><strong>¿Hacen envíos?</strong> Sí, a todo Guatemala.</li>
+            <li><strong>¿Dan garantía?</strong> Sí, 2 años de fábrica en todos los modelos.</li>
+            <li><strong>¿Puedo financiar?</strong> Sí, consulta condiciones en Contacto.</li>
+          </ul>
+        </div>
+  
+        <h3>Agenda una cita de servicio</h3>
+        <form action="#" method="POST">
+          <label for="nombre">Nombre completo:</label>
+          <input id="nombre" type="text" name="nombre" required minlength="3" placeholder="Ej. Edgar Barco">
+  
+          <label for="email">Correo electrónico:</label>
+          <input id="email" type="email" name="email" required placeholder="correo@ejemplo.com">
+  
+          <label for="telefono">Teléfono:</label>
+          <input id="telefono" type="tel" name="telefono" pattern="[0-9]{8}" placeholder="12345678">
+  
+          <label for="modelo">Modelo de tu moto:</label>
+          <input id="modelo" type="text" name="modelo" placeholder="Ej. Sport 250">
+  
+          <label for="fecha">Fecha deseada:</label>
+          <input id="fecha" type="date" name="fecha" required>
+  
+          <label for="mensaje">Mensaje adicional:</label>
+          <textarea id="mensaje" name="mensaje" rows="4" placeholder="Describe el servicio que necesitas"></textarea>
+  
+          <button type="submit">Agendar cita</button>
         </form>
-      </dialog>
-      <button command="show-modal" commandfor="bienvenida">
-        Ver mensaje de bienvenida
-      </button>
-
-      <button popovertarget="menu-ayuda">Ayuda</button>
-      <div id="menu-ayuda" popover>
-        <h4>¿Necesitas ayuda?</h4>
-        <p>Visita la sección de Contacto para más información.</p>
-      </div>
-
-      <form action="#" method="POST">
-        <label for="nombre">Nombre:</label>
-        <input id="nombre" type="text" name="nombre" required minlength="3">
-
-        <label for="email">Email:</label>
-        <input id="email" type="email" name="email" required>
-
-        <label for="mensaje">Mensaje:</label>
-        <textarea id="mensaje" name="mensaje" rows="4"></textarea>
-
-        <button type="submit">Enviar</button>
-      </form>
     </article>
 
     <aside>
