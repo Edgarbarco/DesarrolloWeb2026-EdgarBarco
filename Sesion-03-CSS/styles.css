@@ -99,6 +99,12 @@
     border-radius: 4px;
     font-size: 1rem;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-comprar:hover {
+    background-color: #1f5c1f;
+    transform: scale(1.03);
   }
   
   /* TODO: To-Do List */
