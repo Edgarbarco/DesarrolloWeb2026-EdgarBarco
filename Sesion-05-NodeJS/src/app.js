@@ -191,9 +191,67 @@ export async function agregarMensaje(archivoDatos, texto) {
  * @param {{ archivoDatos?: string, nombreApp?: string, logger?: ReturnType<typeof crearLogger> }} [config]
  * @returns {import('node:http').Server}
  */
-export function crearServidor(config = {}) {
-    throw new Error('Not implemented: crearServidor');
-}
+    export function crearServidor(config = {}) {
+        const archivoDatos = config.archivoDatos || 'data/mensajes.json';
+        const nombreApp = config.nombreApp || 'mensajes-api';
+        const logger = config.logger;
+    
+        const servidor = http.createServer(async (req, res) => {
+            if (logger) {
+                logger.registrar(`${req.method} ${req.url}`);
+            }
+    
+            res.setHeader('Content-Type', 'application/json');
+    
+            try {
+                if (req.method === 'GET' && req.url === '/') {
+                    res.statusCode = 200;
+                    res.end(JSON.stringify({
+                        mensaje: `Bienvenido a ${nombreApp}`,
+                        hora: new Date().toISOString(),
+                        sistema: infoSistema(),
+                    }));
+                    return;
+                }
+    
+                if (req.method === 'GET' && req.url === '/mensajes') {
+                    const mensajes = await leerMensajes(archivoDatos);
+                    res.statusCode = 200;
+                    res.end(JSON.stringify(mensajes));
+                    return;
+                }
+    
+                if (req.method === 'POST' && req.url === '/mensajes') {
+                    const body = await leerBody(req);
+                    let texto;
+                    try {
+                        texto = JSON.parse(body).texto;
+                    } catch {
+                        texto = '';
+                    }
+    
+                    const nuevoMensaje = await agregarMensaje(archivoDatos, texto || '');
+                    if (!nuevoMensaje) {
+                        res.statusCode = 400;
+                        res.end(JSON.stringify({ error: 'El texto es requerido' }));
+                        return;
+                    }
+    
+                    res.statusCode = 201;
+                    res.end(JSON.stringify(nuevoMensaje));
+                    return;
+                }
+    
+                res.statusCode = 404;
+                res.end(JSON.stringify({ error: 'Ruta no encontrada' }));
+            } catch (error) {
+                res.statusCode = 500;
+                res.end(JSON.stringify({ error: 'Error interno del servidor' }));
+            }
+        });
+    
+        return servidor;
+    }
 
 /**
  * Crea y arranca el servidor en el puerto indicado por config.puerto.
@@ -202,7 +260,17 @@ export function crearServidor(config = {}) {
  * @param {{ puerto?: number, archivoDatos?: string, nombreApp?: string, logger?: ReturnType<typeof crearLogger> }} [config]
  * @returns {import('node:http').Server}
  */
-export function iniciarServidor(config = {}) {
-    throw new Error('Not implemented: iniciarServidor');
-}
+    export function iniciarServidor(config = {}) {
+        const puerto = config.puerto || 3000;
+        const logger = config.logger;
+        const servidor = crearServidor(config);
+    
+        servidor.listen(puerto, () => {
+            if (logger) {
+                logger.registrar(`Servidor en http://localhost:${puerto}`);
+            }
+        });
+    
+        return servidor;
+    }
 
