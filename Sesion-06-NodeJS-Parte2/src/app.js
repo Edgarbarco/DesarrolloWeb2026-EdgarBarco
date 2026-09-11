@@ -13,7 +13,7 @@
  *   - better-sqlite3 (CRUD, transacciones)                     → ./src/db.js
  */
 
-import { createReadStream, createWriteStream } from 'node:fs';
+import { createReadStream, createWriteStream, promises as fsPromises } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
 import { Readable } from 'node:stream';
 import { fileURLToPath } from 'node:url';
@@ -73,7 +73,22 @@ export function generarId() {
  * @returns {Promise<number>} cantidad de líneas que coincidieron (0 si no hay).
  */
 export async function filtrarLogs(origen, destino, texto) {
-    throw new Error('Not implemented: filtrarLogs');
+    let contador = 0;
+
+    const lineas = await leerLineas(origen);
+    const coincidencias = lineas.filter((linea) => linea.includes(texto));
+    contador = coincidencias.length;
+
+    await fsPromises.mkdir(dirname(destino), { recursive: true});
+
+    const streamLectura = Readable.from(
+        coincidencias.map((linea) => linea + '\n')
+    );
+    const streamEscritura = createWriteStream(destino);
+
+    await pipeline(streamLectura, streamEscritura);
+
+    return contador;
 }
 
 /**
